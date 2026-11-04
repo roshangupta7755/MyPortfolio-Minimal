@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${name + ' | ' + title}">Portfolio</title>
+
+    <link rel="icon" type="image/svg+xml" th:href="@{/images/favicon.svg}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/minimal.css}" />
+</head>
+
+<body class="theme-minimal">
+
+    <!-- 1. NAVBAR -->
+    <header class="site-header">
+        <nav class="wrap nav-inner" aria-label="Main">
+            <a href="#home" class="brand" th:text="${name}">Your Name</a>
+
+            <button class="nav-toggle" type="button" aria-label="Open or close the menu"
+                    aria-expanded="false" data-nav-toggle>
+                <span></span><span></span><span></span>
+            </button>
+
+            <ul class="nav-links" data-nav-links>
+                <li><a href="#about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact" class="nav-cta">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- 2. HERO -->
+        <section class="hero" id="home">
+            <div class="wrap hero-inner">
+
+                <div class="hero-text">
+                    <p class="hero-role" th:text="${title}">Your Role</p>
+                    <h1 th:text="${name}">Your Name</h1>
+                    <p class="hero-intro" th:text="${tagline}">Short introduction.</p>
+
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn btn-solid">View Projects</a>
+                        <a href="#contact" class="btn btn-ghost">Contact Me</a>
+                    </div>
+
+                    <a class="hero-github" th:href="${github}" target="_blank" rel="noopener">
+                        github.com/<span th:text="${githubUsername}">username</span>
+                    </a>
+                </div>
+
+                <div class="hero-photo">
+                    <img th:src="@{${profileImage}}" th:alt="${name + ' profile photo placeholder'}"
+                         alt="Profile photo placeholder" width="400" height="480" />
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. ABOUT -->
+        <section class="section" id="about">
+            <div class="wrap">
+                <h2 class="section-title">About me</h2>
+
+                <div class="about-grid">
+                    <div class="about-text">
+                        <p th:each="paragraph : ${aboutParagraphs}" th:text="${paragraph}">About text.</p>
+                    </div>
+
+                    <aside class="facts">
+                        <h3>Quick facts</h3>
+                        <dl>
+                            <dt>Studying</dt>
+                            <dd th:text="${degree}">Degree</dd>
+                            <dt>Location</dt>
+                            <dd th:text="${location}">Location</dd>
+                            <dt>Career goal</dt>
+                            <dd th:text="${careerGoal}">Goal</dd>
+                            <dt>Hobbies</dt>
+                            <dd>
+                                <ul class="plain-list">
+                                    <li th:each="hobby : ${hobbies}" th:text="${hobby}">Hobby</li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. EDUCATION -->
+        <section class="section section-soft" id="education">
+            <div class="wrap">
+                <h2 class="section-title">Education</h2>
+
+                <article class="edu-card">
+                    <h3 th:text="${degree}">Degree</h3>
+                    <p class="edu-college" th:text="${college}">College</p>
+                    <p class="edu-meta" th:text="${location}">Location</p>
+                    <p class="placeholder" th:text="${educationPeriod}">Batch years</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- 5. TECHNICAL SKILLS -->
+        <section class="section" id="skills">
+            <div class="wrap">
+                <h2 class="section-title">Technical skills</h2>
+
+                <div class="skill-grid">
+                    <article class="skill-card" th:each="entry : ${skillsByCategory}">
+                        <h3 th:text="${entry.key}">Category</h3>
+                        <ul>
+                            <li th:each="skill : ${entry.value}">
+                                <span class="skill-name" th:text="${skill.name}">Java</span>
+                                <span class="skill-note" th:text="${skill.description}">What I use it for</span>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PROJECTS -->
+        <section class="section section-soft" id="projects">
+            <div class="wrap">
+                <h2 class="section-title">Projects</h2>
+
+                <div class="project-grid">
+                    <article class="project-card" th:each="project : ${projects}">
+                        <p class="project-type" th:text="${project.category}">Type</p>
+                        <h3 th:text="${project.title}">Project title</h3>
+                        <p class="project-desc" th:text="${project.description}">Description</p>
+
+                        <ul th:replace="~{fragments/layout :: techTags(${project.technologies}, 'tags')}"></ul>
+
+                        <a th:if="${project.repoAvailable}" th:href="${project.repoUrl}"
+                           class="project-link" target="_blank" rel="noopener">View on GitHub</a>
+                        <p th:unless="${project.repoAvailable}" class="placeholder">
+                            Repository link not added yet
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. CONTACT -->
+        <section class="section" id="contact">
+            <div class="wrap">
+                <h2 class="section-title">Contact</h2>
+
+                <ul class="contact-list">
+                    <li>
+                        <span class="contact-label">Email</span>
+                        <a th:href="${email}" target="_blank" rel="noopener" th:text="${email}">Email link</a>
+                    </li>
+                    <li>
+                        <span class="contact-label">GitHub</span>
+                        <a th:href="${github}" target="_blank" rel="noopener" th:text="${github}">GitHub link</a>
+                    </li>
+                    <li th:if="${linkedin}">
+                        <span class="contact-label">LinkedIn</span>
+                        <a th:href="${linkedin}" target="_blank" rel="noopener" th:text="${linkedin}">LinkedIn link</a>
+                    </li>
+                    <li>
+                        <span class="contact-label">Location</span>
+                        <span th:text="${location}">Location</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 8. FOOTER -->
+    <footer th:replace="~{fragments/layout :: footer('site-footer')}"></footer>
+    <script th:replace="~{fragments/layout :: scripts}"></script>
+
+</body>
+</html>
